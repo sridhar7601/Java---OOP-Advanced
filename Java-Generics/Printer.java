@@ -1,4 +1,4 @@
-public class Printer <T>{
+public class Printer <T extends Number>{
   T ThingToPrint;
 
 public Printer(T ThingToPrint){
