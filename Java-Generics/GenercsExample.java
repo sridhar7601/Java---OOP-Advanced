@@ -1,7 +1,7 @@
 public class GenercsExample{
     public static void main(String[] args){
  //normal method 
-        // IntegerPrinter printer = new IntegerPrinter(2.3);
+        // IntegerPrinter printer = new IntegerPrinter(2.0);
         //  printer.print();
 
 // with T as type passing via class <...>
