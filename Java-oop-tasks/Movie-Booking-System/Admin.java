@@ -1,27 +1,11 @@
-public class Admin extends User implements IMovieManager {
+
+public class Admin extends Person {
     public Admin(String username, String password) {
-        super(username, password, "admin");
+        super(username, password); // Call the constructor of Person
     }
 
     @Override
     public void role() {
-        System.out.println("Role: Admin");
-    }
-
-    @Override
-    public void interact() {
-        System.out.println("Admin interaction.");
-    }
-
-    @Override
-    public void addMovie(Movie movie) {
-    }
-
-    @Override
-    public void removeMovie(String title) {
-    }
-
-    @Override
-    public void listMovies() {
+        System.out.println("Admin Role");
     }
 }
