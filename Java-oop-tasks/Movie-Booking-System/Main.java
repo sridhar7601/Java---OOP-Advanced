@@ -1,11 +1,13 @@
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     // private static final UserDAO userDAO = new UserDAO();
     // private static final ArrayList<Admin> admins = new ArrayList<>();
-    private static final ArrayList<Movie> movies = new ArrayList<>();
+    // private static final ArrayList<Movie> movies = new ArrayList<>();
+    private static final MovieDAO movieDAO = new MovieDAO();
     private static final ArrayList<Booking> bookings = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -49,8 +51,8 @@ public class Main {
             System.out.println(person.username);
             if (person instanceof User user) {
                 userMenu(user);
-            } else if (person instanceof Admin) {
-                adminMenu();
+            } else if (person instanceof Admin admin) {
+                adminMenu(admin);
             }
         } else {
             System.out.println("Invalid credentials.");
@@ -101,7 +103,7 @@ public class Main {
 
 
     // Admin Menu
-    private static void adminMenu() {
+    private static void adminMenu(Admin admin) {
         while (true) {
             System.out.println("1. Manage Movies");
             System.out.println("2. View Bookings");
@@ -111,7 +113,7 @@ public class Main {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> manageMovies();
+                case 1 -> manageMovies(admin);
                 case 2 -> viewBookings();
                 case 3 -> {
                     System.out.println("Admin logged out.");
@@ -121,7 +123,6 @@ public class Main {
             }
         }
     }
-
     // User Menu
     private static void userMenu(User user) {
         while (true) {
@@ -148,87 +149,52 @@ public class Main {
 
     // Manage Movies (Admin)
 // Manage Movies (Admin)
-private static void manageMovies() {
-    while (true) {
-        System.out.println("1. Add Movie");
-        System.out.println("2. Edit Movie");
-        System.out.println("3. Delete Movie");
-        System.out.println("4. View Movies");
-        System.out.println("5. Back to Admin Menu");
-        System.out.print("Enter choice: ");
-        int choice = scanner.nextInt();
+    private static void manageMovies(Admin admin) {
+        while (true) {
+            System.out.println("1. Add Movie");
+            System.out.println("2. List Movies");
+            System.out.println("3. Back to Admin Menu");
+            System.out.print("Enter choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1 -> addMovie(admin);
+                case 2 -> listMovies();
+                case 3 -> {
+                    return;
+                }
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    // Add Movie
+    private static void addMovie(Admin admin) {
+        System.out.print("Enter title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter genre: ");
+        String genre = scanner.nextLine();
+        System.out.print("Enter duration (minutes): ");
+        int duration = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
-        switch (choice) {
-            case 1 -> addMovie();
-            case 2 -> editMovie();
-            case 3 -> deleteMovie();
-            case 4 -> viewMovies();
-            case 5 -> {
-                return;
+        Movie movie = new Movie(0, title, genre, duration, admin.getAdminId()); // Pass adminId
+        movieDAO.addMovie(movie);
+        System.out.println("Movie added successfully.");
+    }
+
+    // List Movies
+    private static void listMovies() {
+        List<Movie> movies = movieDAO.getAllMovies();
+        if (movies.isEmpty()) {
+            System.out.println("No movies available.");
+        } else {
+            for (Movie movie : movies) {
+                System.out.println(movie);
             }
-            default -> System.out.println("Invalid choice. Try again.");
         }
     }
-}
-
-// Add Movie
-private static void addMovie() {
-    System.out.print("Enter title: ");
-    String title = scanner.nextLine();
-    System.out.print("Enter genre: ");
-    String genre = scanner.nextLine();
-    System.out.print("Enter duration (minutes): ");
-    int duration = scanner.nextInt();
-    scanner.nextLine(); // Consume newline
-
-    movies.add(new Movie(title, genre, duration));
-    System.out.println("Movie added successfully.");
-}
-
-// Edit Movie
-private static void editMovie() {
-    System.out.print("Enter movie title to edit: ");
-    String title = scanner.nextLine();
-    Movie movie = findMovieByTitle(title);
-
-    if (movie != null) {
-        System.out.print("Enter new title (leave blank to keep current): ");
-        String newTitle = scanner.nextLine();
-        System.out.print("Enter new genre (leave blank to keep current): ");
-        String newGenre = scanner.nextLine();
-        System.out.print("Enter new duration (leave blank to keep current): ");
-        String newDuration = scanner.nextLine();
-
-        if (!newTitle.isBlank()) {
-            movie.setTitle(newTitle);
-        }
-        if (!newGenre.isBlank()) {
-            movie.setGenre(newGenre);
-        }
-        if (!newDuration.isBlank()) {
-            movie.setDuration(Integer.parseInt(newDuration));
-        }
-
-        System.out.println("Movie updated successfully.");
-    } else {
-        System.out.println("Movie not found.");
-    }
-}
-
-// Delete Movie
-private static void deleteMovie() {
-    System.out.print("Enter movie title to delete: ");
-    String title = scanner.nextLine();
-    Movie movie = findMovieByTitle(title);
-
-    if (movie != null) {
-        movies.remove(movie);
-        System.out.println("Movie deleted successfully.");
-    } else {
-        System.out.println("Movie not found.");
-    }
-}
 
 // View Movies
 private static void viewMovies() {

@@ -12,4 +12,10 @@ public class Admin extends Person {
         System.out.println("Admin Role");
     }
 
+    int getAdminId() {
+        return 
+    }
+
+
 }
+ 
