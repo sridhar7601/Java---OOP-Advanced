@@ -44,7 +44,9 @@ public class Main {
         Person person = dao.authenticate(tableName, username, password);
         
         if (person != null) {
-            System.out.println("Login successful.");
+            System.out.println("Welcome Back ");
+
+            System.out.println(person.username);
             if (person instanceof User user) {
                 userMenu(user);
             } else if (person instanceof Admin) {
