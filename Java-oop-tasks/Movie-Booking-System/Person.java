@@ -22,4 +22,6 @@ public abstract class Person {
     }
 
     public abstract void role();
+
+    // protected abstract void interact();
 }

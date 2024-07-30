@@ -3,16 +3,16 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    private static ArrayList<User> users = new ArrayList<>();
-    private static ArrayList<Admin> admins = new ArrayList<>();
-    private static ArrayList<Movie> movies = new ArrayList<>();
-    private static ArrayList<Booking> bookings = new ArrayList<>();
-    private static Scanner scanner = new Scanner(System.in);
+    // private static final UserDAO userDAO = new UserDAO();
+    // private static final ArrayList<Admin> admins = new ArrayList<>();
+    private static final ArrayList<Movie> movies = new ArrayList<>();
+    private static final ArrayList<Booking> bookings = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         // Adding a default admin and user for testing
-        admins.add(new Admin("admin", "admin123"));
-        users.add(new User("user", "user123"));
+        // admins.add(new Admin("admin", "admin123"));
+        // users.add(new User("user", "user123"));
 
         while (true) {
             System.out.println("1. Admin Login");
@@ -23,57 +23,83 @@ public class Main {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1:
-                    adminLogin();
-                    break;
-                case 2:
-                    userLogin();
-                    break;
-                case 3:
+                case 1 -> adminLogin();
+                case 2 -> userLogin();
+                case 3 -> {
                     System.out.println("Exiting...");
                     return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                }
+                default -> System.out.println("Invalid choice. Try again.");
             }
         }
     }
 
-    // Admin Login
-    private static void adminLogin() {
+    private static void login(String tableName) {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-
-        for (Admin admin : admins) {
-            if (admin.authenticate(username, password)) {
-                System.out.println("Admin logged in successfully.");
-                adminMenu(admin);
-                return;
+        
+        GenericDAO dao = new GenericDAO();
+        Person person = dao.authenticate(tableName, username, password);
+        
+        if (person != null) {
+            System.out.println("Login successful.");
+            if (person instanceof User user) {
+                userMenu(user);
+            } else if (person instanceof Admin) {
+                adminMenu();
             }
+        } else {
+            System.out.println("Invalid credentials.");
         }
-        System.out.println("Invalid admin credentials.");
     }
-
+    
     // User Login
     private static void userLogin() {
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        for (User user : users) {
-            if (user.authenticate(username, password)) {
-                System.out.println("User logged in successfully.");
-                userMenu(user);
-                return;
-            }
-        }
-        System.out.println("Invalid user credentials.");
+        login("users"); // Passing "users" table name for user authentication
     }
+    
+    // Admin Login
+    private static void adminLogin() {
+        login("admins"); // Passing "admins" table name for admin authentication
+    }
+    
+    // // Admin Login
+    // private static void adminLogin() {
+    //     System.out.print("Enter username: ");
+    //     String username = scanner.nextLine();
+    //     System.out.print("Enter password: ");
+    //     String password = scanner.nextLine();
+
+    //     for (Admin admin : admins) {
+    //         if (admin.authenticate(username, password)) {
+    //             System.out.println("Admin logged in successfully.");
+    //             adminMenu();
+    //             return;
+    //         }
+    //     }
+    //     System.out.println("Invalid admin credentials.");
+    // }
+
+    // // User Login
+    // private static void userLogin() {
+    //     System.out.print("Enter username: ");
+    //     String username = scanner.nextLine();
+    //     System.out.print("Enter password: ");
+    //     String password = scanner.nextLine();
+    //     User user = userDAO.authenticate(username, password);
+    //     if (user != null) {
+    //         System.out.println(user.username);
+    //         userMenu(user);
+    //     } else {
+    //         System.out.println("Invalid user credentials.");
+    //     }
+    // }
+
 
     // Admin Menu
-    private static void adminMenu(Admin admin) {
+    private static void adminMenu() {
         while (true) {
             System.out.println("1. Manage Movies");
             System.out.println("2. View Bookings");
@@ -83,17 +109,13 @@ public class Main {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1:
-                    manageMovies();
-                    break;
-                case 2:
-                    viewBookings();
-                    break;
-                case 3:
+                case 1 -> manageMovies();
+                case 2 -> viewBookings();
+                case 3 -> {
                     System.out.println("Admin logged out.");
                     return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                }
+                default -> System.out.println("Invalid choice. Try again.");
             }
         }
     }
@@ -110,20 +132,14 @@ public class Main {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1:
-                    viewMovies();
-                    break;
-                case 2:
-                    bookTickets(user);
-                    break;
-                case 3:
-                    viewMyBookings(user);
-                    break;
-                case 4:
+                case 1 -> viewMovies();
+                case 2 -> bookTickets(user);
+                case 3 -> viewMyBookings(user);
+                case 4 -> {
                     System.out.println("User logged out.");
                     return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                }
+                default -> System.out.println("Invalid choice. Try again.");
             }
         }
     }
@@ -142,22 +158,14 @@ private static void manageMovies() {
         scanner.nextLine(); // Consume newline
 
         switch (choice) {
-            case 1:
-                addMovie();
-                break;
-            case 2:
-                editMovie();
-                break;
-            case 3:
-                deleteMovie();
-                break;
-            case 4:
-                viewMovies();
-                break;
-            case 5:
+            case 1 -> addMovie();
+            case 2 -> editMovie();
+            case 3 -> deleteMovie();
+            case 4 -> viewMovies();
+            case 5 -> {
                 return;
-            default:
-                System.out.println("Invalid choice. Try again.");
+            }
+            default -> System.out.println("Invalid choice. Try again.");
         }
     }
 }

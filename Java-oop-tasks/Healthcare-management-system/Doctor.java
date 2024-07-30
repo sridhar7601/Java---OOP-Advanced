@@ -12,10 +12,11 @@ public class Doctor extends Person {
 
     @Override
     public void interact() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome, Doctor.");
-        System.out.println("Enter patient diagnosis details:");
-        String diagnosis = scanner.nextLine();
-        System.out.println("Diagnosis recorded: " + diagnosis);
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Welcome, Doctor.");
+            System.out.println("Enter patient diagnosis details:");
+            String diagnosis = scanner.nextLine();
+            System.out.println("Diagnosis recorded: " + diagnosis);
+        }
     }
 }
